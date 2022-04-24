@@ -1,12 +1,9 @@
 """Generadores aleatorios."""
 
 import abc
-import warnings
 from typing import Union
 
 import numpy as np
-
-warnings.filterwarnings("ignore")
 
 # pylint: disable=invalid-name
 
@@ -15,14 +12,14 @@ class RandomGenerator(abc.ABC):
     """Clase abstracta de un generador de números aleatorios."""
 
     @abc.abstractmethod
-    def generar(self) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = False) -> Union[np.float64, np.uint64]:
 
         """Método para generar un número aleatorio."""
         raise NotImplementedError()
 
-    def generar_vector(self, cantidad: int = 100) -> np.ndarray:
+    def generar_vector(self, cantidad: int = 100, uniforme: bool = False) -> np.ndarray:
         """Método para generar un vector de números aleatorio."""
-        return np.array([self.generar() for _ in range(cantidad)])
+        return np.array([self.generar(uniforme=uniforme) for _ in range(cantidad)])
 
 
 class GCL(RandomGenerator):
@@ -43,13 +40,14 @@ class GCL(RandomGenerator):
             mult: valor de multiplicador
             incremento: valor de incremento
             modulo: valor de modulo
+            uniforme: si debe ser uniforme el resultado
         """
         self.Xi = semilla
         self.multiplicador = multiplicador
         self.incremento = incremento
         self.modulo = modulo
 
-    def generar(self) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = False) -> Union[np.float64, np.uint64]:
         """Genera un número al azar.
 
         Parametros
@@ -61,7 +59,8 @@ class GCL(RandomGenerator):
             Número aleatorio.
         """
         result = self.Xi
-        result /= self.modulo
+        if uniforme:
+            result /= self.modulo
 
         self.Xi = self.multiplicador * self.Xi + self.incremento
         self.Xi %= self.modulo
@@ -72,14 +71,12 @@ class XBG(RandomGenerator):
     """XOR based random number generator (Xoroshiro)."""
 
     def __init__(
-        self,
-        x0: np.uint64 = np.uint64(119823174),
-        x1: np.uint64 = np.uint64(1234987),
+        self, x0: np.uint64 = np.uint64(119823174), x1: np.uint64 = np.uint64(1234987),
     ):
         self.x0, self.x1 = x0, x1
         assert not (self.x0 == 0 and self.x1 == 0)
 
-    def generar(self) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = False) -> Union[np.float64, np.uint64]:
         def rotate_left(n, d):
             """Rotate n by d bits."""
             return np.bitwise_or(
@@ -88,7 +85,8 @@ class XBG(RandomGenerator):
             )
 
         result = (self.x0 + self.x1) & np.iinfo(np.uint64).max
-        result /= np.iinfo(np.uint64).max
+        if uniforme:
+            result /= np.iinfo(np.uint64).max
 
         s0, s1 = self.x0, self.x1
         s1 ^= s0
@@ -119,7 +117,7 @@ class LXM(RandomGenerator):
         self.LCG = GCL(multiplicador=M, incremento=a)
         self.XBG = XBG()
 
-    def generar(self) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = True) -> Union[np.float64, np.uint64]:
         """Generar un número aleatorio."""
 
         def high_order_bits(s, w):
