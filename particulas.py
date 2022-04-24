@@ -19,7 +19,7 @@ sns.set()
 
 np.random.seed(117)
 random.seed(117)
-matplotlib.rcParams["animation.embed_limit"] = 2 ** 128
+matplotlib.rcParams["animation.embed_limit"] = 2**128
 
 POSIBLES_MOVIMIENTOS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
@@ -32,7 +32,7 @@ class Shuffler:  # pylint: disable=too-few-public-methods
 
     def __call__(self, list_like):
         for idx in range(len(list_like) - 1, 0, -1):
-            sel = int(np.floor(self.lxm.generar(uniforme=True) * (idx + 1)))
+            sel = int(np.floor(self.lxm.generar() * (idx + 1)))
             list_like[idx], list_like[sel] = list_like[sel], list_like[idx]
 
 
@@ -111,7 +111,9 @@ class Caminante:
 
 
 def simular(
-    lado_grilla: int = 100, caminantes: int = 50, iteraciones: int = 500,
+    lado_grilla: int = 100,
+    caminantes: int = 50,
+    iteraciones: int = 500,
 ):
     """Simular la pandemia.
 
@@ -128,7 +130,7 @@ def simular(
     # generamos uniformemente las posiciones iniciales
     xs, ys = np.divmod(
         np.random.choice(
-            np.arange(0, lado_grilla ** 2, 1), size=caminantes, replace=False
+            np.arange(0, lado_grilla**2, 1), size=caminantes, replace=False
         ),
         lado_grilla,
     )
@@ -160,7 +162,9 @@ def simular(
             # los movemos de a uno para evitar colisiones
             # con el shuffle anterior evitamos que tengan siempre prioridad los mismos
             caminante.mover(
-                iternum, shuffler, nueva_grilla,
+                iternum,
+                shuffler,
+                nueva_grilla,
             )
 
         snapshots_path.append(grilla)

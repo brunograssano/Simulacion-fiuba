@@ -12,12 +12,12 @@ class RandomGenerator(abc.ABC):
     """Clase abstracta de un generador de números aleatorios."""
 
     @abc.abstractmethod
-    def generar(self, uniforme: bool = False) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = True) -> Union[np.float64, np.uint64]:
 
         """Método para generar un número aleatorio."""
         raise NotImplementedError()
 
-    def generar_vector(self, cantidad: int = 100, uniforme: bool = False) -> np.ndarray:
+    def generar_vector(self, cantidad: int = 100, uniforme: bool = True) -> np.ndarray:
         """Método para generar un vector de números aleatorio."""
         return np.array([self.generar(uniforme=uniforme) for _ in range(cantidad)])
 
@@ -40,14 +40,13 @@ class GCL(RandomGenerator):
             mult: valor de multiplicador
             incremento: valor de incremento
             modulo: valor de modulo
-            uniforme: si debe ser uniforme el resultado
         """
         self.Xi = semilla
         self.multiplicador = multiplicador
         self.incremento = incremento
         self.modulo = modulo
 
-    def generar(self, uniforme: bool = False) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = True) -> Union[np.float64, np.uint64]:
         """Genera un número al azar.
 
         Parametros
@@ -71,12 +70,14 @@ class XBG(RandomGenerator):
     """XOR based random number generator (Xoroshiro)."""
 
     def __init__(
-        self, x0: np.uint64 = np.uint64(119823174), x1: np.uint64 = np.uint64(1234987),
+        self,
+        x0: np.uint64 = np.uint64(119823174),
+        x1: np.uint64 = np.uint64(1234987),
     ):
         self.x0, self.x1 = x0, x1
         assert not (self.x0 == 0 and self.x1 == 0)
 
-    def generar(self, uniforme: bool = False) -> Union[np.float64, np.uint64]:
+    def generar(self, uniforme: bool = True) -> Union[np.float64, np.uint64]:
         def rotate_left(n, d):
             """Rotate n by d bits."""
             return np.bitwise_or(
@@ -124,8 +125,8 @@ class LXM(RandomGenerator):
             """Get w highest order bits from s."""
             return np.right_shift(s, np.uint64(s.nbytes * 8 - w))
 
-        s = self.LCG.generar()
-        t = self.XBG.generar()
+        s = self.LCG.generar(uniforme=False)
+        t = self.XBG.generar(uniforme=False)
 
         z = self._mix(
             self._combine(high_order_bits(s, self.w), high_order_bits(t, self.w))
