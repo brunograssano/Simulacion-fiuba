@@ -32,7 +32,7 @@ class Shuffler:  # pylint: disable=too-few-public-methods
 
     def __call__(self, list_like):
         for idx in range(len(list_like) - 1, 0, -1):
-            sel = int(np.floor(self.lxm.generar(uniforme=True) * (idx + 1)))
+            sel = int(np.floor(self.lxm.generar() * (idx + 1)))
             list_like[idx], list_like[sel] = list_like[sel], list_like[idx]
 
 
