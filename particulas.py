@@ -180,7 +180,7 @@ def animacion(snapshots_path, caminantes, guardar=None, lado_grilla: int = 100):
     for caminante in caminantes:
         dict_tipos[caminante.tipo].append(caminante.identificador)
 
-    fig = plt.figure(figsize=(10, 5), dpi=100)
+    fig = plt.figure(figsize=(8, 4), dpi=90)
 
     gs = gridspec.GridSpec(2, 2, width_ratios=[8, 12])
     ax1 = fig.add_subplot(gs[0:, 0])

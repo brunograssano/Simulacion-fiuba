@@ -5,7 +5,10 @@ from typing import Union
 
 import numpy as np
 
+import warnings
+
 # pylint: disable=invalid-name
+warnings.filterwarnings("ignore")
 
 
 class RandomGenerator(abc.ABC):
