@@ -1,1 +1,1 @@
-jupyter nbconvert TP_1_2022.ipynb --to slides --post serve
+jupyter nbconvert TP_2_2022.ilpynb --to slides --post serve
