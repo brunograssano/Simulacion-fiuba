@@ -14900,7 +14900,7 @@ considerando:</p>
 </div>
 </div>
 </div>
-</div><div class="fragment">
+</div></section><section>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14912,7 +14912,7 @@ considerando:</p>
 </div>
 </div>
 </div>
-</div></div></section><section><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -14930,7 +14930,7 @@ considerando:</p>
 </div>
 </div>
 
-</div><div class="fragment">
+</div></div></section><section>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14942,7 +14942,80 @@ considerando:</p>
 </div>
 </div>
 </div>
+</div><div class="fragment">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Satelite</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">servicioDescarga</span><span class="p">,</span> <span class="n">lambdaArgumento</span><span class="p">,</span> <span class="n">generador</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambdaArgumento</span> <span class="o">=</span> <span class="n">lambdaArgumento</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generador</span> <span class="o">=</span> <span class="n">generador</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">servicioDescarga</span> <span class="o">=</span> <span class="n">servicioDescarga</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">largoColaEnTiempo</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tiemposDeServicio</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tiemposDeServicioAfectadosPorLaCola</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tiempoEntreArribos</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tiemposAcumulados</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
 </div></div></section><section>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">atencion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="n">tiempoAtencion</span> <span class="o">=</span> <span class="n">exponencial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lambdaArgumento</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generador</span><span class="p">)</span>
+        <span class="n">servicio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servicioDescarga</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">servicio</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">largoCola</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">servicioDescarga</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">largoCola</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">largoCola</span>
+        <span class="n">tiempoServicio</span> <span class="o">=</span> <span class="n">tiempoAtencion</span> <span class="o">/</span> <span class="n">N</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">largoColaEnTiempo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">largoCola</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tiemposDeServicio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tiempoAtencion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tiemposDeServicioAfectadosPorLaCola</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tiempoServicio</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="n">env</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="n">tiempoServicio</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">servicioDescarga</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">servicio</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solicitud</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">satelite</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satelite</span> <span class="o">=</span> <span class="n">satelite</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+
+    <span class="k">def</span> <span class="nf">tratarse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">satelite</span><span class="o">.</span><span class="n">atencion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div></section><section>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
